@@ -1,0 +1,114 @@
+<!-- 事件监听，冒泡和捕获
+事件监听有两种模式，冒泡和捕获，冒泡字面意思理解，从下到上，从目标元素向父级元素，到window对象为止，捕获从上到下，从window对象到目标元素
+事件代理: 在父元素添加监听事件，通过点击事件event中的target找到实际被点击到的Dom节点，从而进行相应的dom操作，优点：减少监听器数量，管理方便（移除等），
+提高性能（忽略不计），减少循环操作。
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body{
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+            #capture_parent ,#bubble_parent{
+            width: 400px;
+            height: 400px;
+            position: relative;
+            background: coral;
+            text-align: center;
+            }
+            #capture_child ,#bubble_child{
+                width: 150px;
+                height: 150px;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                margin: auto;
+                border: 1px solid black;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id='capture_parent'>
+            捕获
+            <div id='capture_child'></div>
+        </div>
+
+        <div id='bubble_parent'>
+            冒泡
+            <div id='bubble_child'></div>
+        </div>
+        <ul id='ul'>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+        </ul>
+    </body>
+    <script>
+        window.onload = addEvent();
+
+        function addEvent(){
+            //捕获父元素
+            var capture_parent = document.getElementById('capture_parent');
+            //捕获子元素
+            var capture_child = document.getElementById('capture_child');
+            //冒泡父元素
+            var bubble_parent = document.getElementById('bubble_parent');
+            //冒泡子元素
+            var bubble_child = document.getElementById('bubble_child');
+            //事件委托父元素
+            var ul = document.getElementById('ul');
+
+
+            /*
+            * Dom.addEventListener(event,function,useCapture)
+            *@params
+            *<event| String>监听事件
+            *<function| Function>响应函数
+            *<useCapture| Bool>是否使用捕获
+            */
+
+            /*四个元素添加点击事件*/
+            capture_parent.addEventListener('click',function(){alert('捕获父元素')},true);
+            capture_child.addEventListener('click',function(){alert('捕获子元素')},true);
+            bubble_parent.addEventListener('click',function(){alert('冒泡父元素')},false);
+            bubble_child.addEventListener('click',function(){alert('冒泡子元素')},false);
+
+
+
+            /*事件委托*/
+            ul.addEventListener('click',changeLiColor)
+        }
+
+        /*
+        *changeLiColor
+        *事件委托响应函数，用来改变li颜色
+        *@params
+        *<event| Object>鼠标点击事件对象
+        */
+        function changeLiColor(event){
+            //点击事件event比较重要，建议查看
+            console.log(event)
+            var liArr = document.getElementsByTagName('li');
+                for(var i=0;i<liArr.length;i++){
+                    liArr[i].style.background = 'white'
+                }
+                event.target.style.background = "red";
+        }
+
+
+
+
+
+        /*
+        *阻止冒泡和捕获操作
+        *event.stopPropagation();
+        */
+    </script>
+</html>
